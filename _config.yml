@@ -1,8 +1,7 @@
 title: gaga's blog
+name: gaga's blog
 description: Thoughts and experiments
 
-navigation:                # accepts {file, title, url, icon, sidebaricon}
-  - {file: "blog.md"}
 
 remote_theme: brutalist-blog
 
