@@ -1,3 +1,5 @@
 theme: jekyll-theme-minimal
 title: gaga's blog
 description: Thoughts and experiments
+plugins:
+  - jemoji
