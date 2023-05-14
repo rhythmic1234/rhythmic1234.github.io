@@ -1,5 +1,9 @@
 theme: jekyll-theme-minimal
 title: gaga's blog
 description: Thoughts and experiments
+
+navigation:                # accepts {file, title, url, icon, sidebaricon}
+  - {file: "blog.md"}
+
 plugins:
   - jemoji
