@@ -3,7 +3,7 @@ name: gaga's blog
 description: Thoughts and experiments
 
 
-remote_theme: brutalist-blog
+remote_theme: andrewhwanpark/brutalist-blog
 
 plugins:
   - jemoji
