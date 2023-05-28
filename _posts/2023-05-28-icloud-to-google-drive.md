@@ -22,69 +22,97 @@ So, my aim has became to do one-way sync from iCloud to Google Drive.
 I will do this using my old Macbook, keeping it open and running a cron job.
 
 # Solution
-My solution steps are to...
-1. Find out location of iCloud and Google Drive, since we need to access from terminal
-2. Ensure that `crontab` and `rsync` binaries can access iCloud + Google drive folders from MacOS terminal
-3. Prepare the script using `rsync`
-4. Setup a cronjob to run our script every hour
-5. Prevent Mac from sleeping to run cronjobs properly
 
-## 1- Find out source and destination folder
-Find out source folder in iCloud. In `~/Library/Mobile\ Documents/` folder find the folder you want to sync from iCloud.
+<details>
+  <summary>
+    1- Find out location of iCloud and Google Drive
+  </summary>
+  
+  Find out source folder in iCloud. In `~/Library/Mobile\ Documents/` folder find the folder you want to sync from iCloud.
 
-In my case, Obsidian data is in `iCloud~md~obsidian/Documents/Obsidian`
+  In my case, Obsidian data is in `iCloud~md~obsidian/Documents/Obsidian`
 
-Create destination folder (in Google Drive). The relative path can be like `~/Google\ Drive/My\ Drive/Obsidian/`
+  Create destination folder (in Google Drive). The relative path can be like `~/Google\ Drive/My\ Drive/Obsidian/`
+  
+</details>
 
-## 2- Giving full disk access to crontab and rsync binaries
-This is required due to Apple's privacy and security policies.
+<details>
+  <summary>
+    2- Ensure that crontab and rsync binaries can access iCloud + Google drive folders from MacOS terminal
+  </summary>
+  
+  We need to give **full disk access** to `crontab` and `rsync` binaries. This is required due to Apple's privacy and security policies.
 
-a. Go to System Preferences/Security & Privacy/Privacy. Click + to add an app.
+  a. Go to System Preferences/Security & Privacy/Privacy. Click + to add an app.
+  ![adding new app](/assets/images/icloud-sync-1-macos-privacy-settings.png)
 
-b. Click "Cmd + Shift + g" to pick custom path (both _crontab_ and _rsync_ is in **/usr/bin/**)
+  b. Click "Cmd + Shift + g" to pick custom path (both _crontab_ and _rsync_ is in **/usr/bin/**)
+![custom path selection](/assets/images/icloud-sync-1.png)
+  
+</details>
 
 
-## 3- Sync script
-### Install latest rsync via brew
-Default rsync shipped in MacOS may give following [error](https://www.jafdip.com/how-to-fix-rsync-error-code-23-on-mac-os-x/):
+<details>
+  <summary>
+    3- Prepare the sync script using rsync
+  </summary>
+  
+  ### Install latest rsync via brew
+  Default rsync shipped in MacOS may give following [error](https://www.jafdip.com/how-to-fix-rsync-error-code-23-on-mac-os-x/):
 
-`rsync error: some files could not be transferred (code 23) at ...`
+  `rsync error: some files could not be transferred (code 23) at ...`
 
-So install latest rsync via brew.
+  So install latest rsync via brew.
 
-Then find the binary location, which should be: `/usr/local/opt/rsync/bin/rsync`
+  Then find the binary location, which should be: `/usr/local/opt/rsync/bin/rsync`
 
-(*/usr/local/opt is a symbolic link used by brew*)
+  (*/usr/local/opt is a symbolic link used by brew*)
 
-### obsidian-sync.sh
-So our script should look like as follows:
-```bash
-#!/bin/zsh
+  ### obsidian-sync.sh
+  So our script should look like as follows:
+  ```bash
+  #!/bin/zsh
 
-OBSIDIAN_SOURCE=~/Library/Mobile\ Documents/iCloud~md~obsidian/Documents/Obsidian/
-OBSIDIAN_DEST=~/Google\ Drive/My\ Drive/Obsidian/
+  OBSIDIAN_SOURCE=~/Library/Mobile\ Documents/iCloud~md~obsidian/Documents/Obsidian/
+  OBSIDIAN_DEST=~/Google\ Drive/My\ Drive/Obsidian/
 
-# Print date (for logging)
-echo "==== ===== ===="
-echo $(date)
+  # Print date (for logging)
+  echo "==== ===== ===="
+  echo $(date)
 
-# synchronize files from iCloud directory to Google Drive directory
-rsync -ahv --delete $OBSIDIAN_SOURCE $OBSIDIAN_DEST
+  # synchronize files from iCloud directory to Google Drive directory
+  rsync -ahv --delete $OBSIDIAN_SOURCE $OBSIDIAN_DEST
 
-# force iCloud to re-sync
-killall bird
-```
+  # force iCloud to re-sync
+  killall bird
+  ```
 
-Don't forget to give execute permission to the file `chmod +x obsidian-sync.sh`
+  Don't forget to give execute permission to the file `chmod +x obsidian-sync.sh`
+  
+</details>
 
-## 4- Setting cron job
-```bash
-# open via `crontab -e` and type the config below
-0 * * * * ~/obsidian-sync.sh > ~/obsidian-sync.log 2>&1
-```
+<details>
+  <summary>
+    4- Setup a cronjob to run our script every hour
+  </summary>
 
-## 5- Prevent Mac from sleeping
-This is optional. Since I don't use my old mac, I make sure it is awake continuosly.
+  ```bash
+  # open via `crontab -e` and type the config below
+  0 * * * * ~/obsidian-sync.sh > ~/obsidian-sync.log 2>&1
+  ```
+  
+</details>
+
+
+<details>
+  <summary>
+    5- Prevent Mac from sleeping to run cronjobs properly
+  </summary>
+
+  This is optional. Since I don't use my old mac, I make sure it is awake always.
+</details>
+
+---
 
 # Conclusion
 
