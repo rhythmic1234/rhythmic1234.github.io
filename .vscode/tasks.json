@@ -4,7 +4,7 @@
       {
         "label": "Serve Jekyll Site",
         "type": "shell",
-        "command": "bundle exec jekyll serve",
+        "command": "/usr/local/opt/ruby/bin/bundle exec jekyll serve",
         "group": {
           "kind": "build",
           "isDefault": true
